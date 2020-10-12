@@ -1,0 +1,83 @@
+int redPin = 13;
+int yellowPin = 11;
+int greenPin = 9;
+int buzzerPin = 7;
+int buttonPin = 5;
+
+int buttonCheck = 0;
+int counter = 0;
+int i = 0;
+
+void setup()
+{
+  pinMode(redPin, OUTPUT);
+  pinMode(yellowPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);  
+  pinMode(buttonPin, INPUT_PULLUP);  
+}
+
+void loop() {
+  while (buttonCheck == 0){
+    digitalWrite(redPin, HIGH);
+    for (counter = 0; counter < 1; counter++) {
+      for (i = 0; i < 1000; i++){
+      delay(1);
+      }
+    }
+    if (digitalRead(buttonPin) == LOW) { //check if button is pressed
+      buttonCheck = 1;
+      break;
+    }
+    digitalWrite(redPin, LOW);
+    for (counter = 0; counter < 1; counter++) {
+      for (i = 0; i < 1000; i++){
+        if (digitalRead(buttonPin) == LOW) { //check if button is pressed
+          buttonCheck = 1;
+          break;
+        }
+      delay(1);
+      }
+    }
+  }
+  digitalWrite(yellowPin, LOW);
+  digitalWrite(redPin, HIGH);
+  counter = 0;
+  while (counter < 12) {  //count up to 1
+    delay(1000);
+    counter++;
+  }
+  for (counter = 0; counter < 3; counter++) { //buzzer on for 3 seconds
+    for (i = 0; i < 250; i++){
+      digitalWrite(buzzerPin, HIGH);
+      delay(2);
+      digitalWrite(buzzerPin ,LOW);
+      delay(2);
+    }
+  }
+  digitalWrite(redPin, LOW);
+  digitalWrite(greenPin, HIGH);
+  counter = 0;
+  while (counter < 12) {  //count up to 12
+    delay(1000);
+    counter++;
+  }
+  for (counter = 0; counter < 3; counter++) { //buzzer on for 3 seconds
+    for (i = 0; i < 250; i++){
+      digitalWrite(buzzerPin, HIGH);
+      delay(2);
+      digitalWrite(buzzerPin ,LOW);
+      delay(2);
+    }
+  }
+  digitalWrite(greenPin, LOW);
+  digitalWrite(yellowPin, HIGH);
+  for (counter = 0; counter < 3; counter++) { //buzzer on for 3 seconds
+    for (i = 0; i < 250; i++){
+      digitalWrite(buzzerPin, HIGH);
+      delay(2);
+      digitalWrite(buzzerPin ,LOW);
+      delay(2);
+    }
+  }
+}
