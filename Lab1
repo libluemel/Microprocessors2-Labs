@@ -22,12 +22,12 @@ void loop() {
     digitalWrite(redPin, HIGH);
     for (counter = 0; counter < 1; counter++) {
       for (i = 0; i < 1000; i++){
+        if (digitalRead(buttonPin) == LOW) { //check if button is pressed
+          buttonCheck = 1;
+          break;
+        }
       delay(1);
       }
-    }
-    if (digitalRead(buttonPin) == LOW) { //check if button is pressed
-      buttonCheck = 1;
-      break;
     }
     digitalWrite(redPin, LOW);
     for (counter = 0; counter < 1; counter++) {
