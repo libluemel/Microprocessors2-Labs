@@ -1,0 +1,141 @@
+#define ENABLE 5
+#define DIRA 3
+#define DIRB 4
+
+int i;
+int directionsetting = 1;
+int speedsetting = 0;
+int second;
+int buttonPin = 2;
+
+#include <LiquidCrystal.h>
+
+#include <Wire.h>
+#include <DS3231.h>
+
+DS3231 clock;
+RTCDateTime dt;
+
+LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
+
+void setup() {
+  pinMode(ENABLE,OUTPUT);
+  pinMode(DIRA,OUTPUT);
+  pinMode(DIRB,OUTPUT);
+  Serial.begin(9600);
+
+  lcd.begin(16, 2);
+
+  clock.begin();
+
+  clock.setDateTime(__DATE__, __TIME__);
+
+  pinMode(buttonPin, INPUT_PULLUP);
+}
+
+void loop() {
+  dt = clock.getDateTime();
+  if(dt.second == 0){
+    for(i=0; i<30; i++){
+      if(i<10){
+        speedsetting = 3;
+      }
+      else if(i<20){
+        speedsetting = 2;
+      }
+      else {
+        speedsetting = 1;
+      }
+      dt = clock.getDateTime();
+
+      if (digitalRead(buttonPin) == LOW && directionsetting == 1){
+        directionsetting = 0;
+      }
+      else if(digitalRead(buttonPin) == LOW && directionsetting == 0){
+        directionsetting = 1;
+      }
+      lcd.setCursor(0,0);
+      lcd.print("SPD:");
+      if(speedsetting == 3){
+        lcd.print("FULL");  
+      }
+      if(speedsetting == 2){
+        lcd.print("3/4");  
+      }
+      if(speedsetting == 1){
+       lcd.print("1/2");  
+      }
+ 
+      lcd.print(" DIR:");
+      if(directionsetting == 1){
+        lcd.print("CW");  
+      }
+      if(directionsetting == 0){
+        lcd.print("CC");  
+      }
+      lcd.print("      ");
+   
+      lcd.setCursor(0,1);
+      lcd.print(dt.hour);
+      lcd.print(":");
+      lcd.print(dt.minute);
+      lcd.print(":");
+      lcd.print(dt.second);
+      lcd.println("            ");
+ 
+      if(directionsetting == 1){
+        digitalWrite(DIRA,HIGH);
+        digitalWrite(DIRB,LOW);
+      }
+       if(directionsetting == 0){
+        digitalWrite(DIRA,LOW);
+        digitalWrite(DIRB,HIGH);
+      }
+     
+      if(speedsetting == 3){
+      analogWrite(ENABLE,255);  
+      }
+      if(speedsetting == 2){
+      analogWrite(ENABLE,192);  
+      }
+      if(speedsetting == 1){
+      analogWrite(ENABLE,128);  
+      }
+      delay(1000);
+    }
+  }
+
+  analogWrite(ENABLE, 0);
+  speedsetting = 0;
+ 
+  if (digitalRead(buttonPin) == LOW && directionsetting == 1){
+    directionsetting = 0;
+    delay(500);
+  }
+  if (digitalRead(buttonPin) == LOW && directionsetting == 0){
+    directionsetting = 1;
+    delay(500);
+  }
+ 
+  lcd.setCursor(0,0);
+  lcd.print("SPD:");
+  lcd.print("OFF");  
+ 
+  lcd.print(" DIR:");
+  if(directionsetting == 1){
+    lcd.print("CW");  
+  }
+  if(directionsetting == 0){
+    lcd.print("CC");  
+  }
+  lcd.print("        ");
+   
+  lcd.setCursor(0,1);
+  lcd.print(dt.hour);
+  lcd.print(":");
+  lcd.print(dt.minute);
+  lcd.print(":");
+  lcd.print(dt.second);
+  lcd.println("            ");
+}
+
